@@ -43,6 +43,7 @@ int main() {
 		for (int i = 0; i < playerCount; i++) {
 			uintptr_t entity = mem.RPM<uintptr_t>(entityList + i * 0x4);
 			if (!entity) continue;
+			if (entity == localPlayer) continue;
 
 			char nickname[16];
 			mem.bufferRPM(entity + Offsets::nickname, nickname, sizeof(nickname));
@@ -50,7 +51,7 @@ int main() {
 			int health = mem.RPM<int>(entity + Offsets::health);
 			if (health > 100 || health <= 0) continue;
 
-			//std::cout << std::format("{}'s health: {}", nickname, health) << std::endl;
+			std::cout << std::format("{}'s health: {}", nickname, health) << std::endl;
 
 			float feetX = mem.RPM<float>(entity + Offsets::feetPosX);
 			float feetY = mem.RPM<float>(entity + Offsets::feetPosY);
@@ -79,9 +80,5 @@ int main() {
 				std::cout << "screen y = " << screen.y << std::endl;
 			}
 		}
-
-
 	}
-
-	CloseHandle(hProcess);
 }

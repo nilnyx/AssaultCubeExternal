@@ -7,10 +7,11 @@ bool WorldToScreen(const Vector3& pos, Vector2& screen, const float matrix[4][4]
 	//float clipZ = matrix[0][2] * pos.x + matrix[1][2] * pos.y + matrix[2][2] * pos.z + matrix[3][2]; // unnecessary, if we do 2d esp
 	float clipW = matrix[0][3] * pos.x + matrix[1][3] * pos.y + matrix[2][3] * pos.z + matrix[3][3];
 
-	// point is behind camera but outside FOV
+	// don't draw if the point is behind camera
 	if (clipW <= 0.1f) return false;
 
 	// normalizing device coordinates 
+	// point is behind camera but outside FOV
 	float ndcX = clipX / clipW;
 	float ndcY = clipY / clipW;
 

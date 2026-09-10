@@ -3,5 +3,5 @@
 
 namespace Constants {
 	const std::string processName = "ac_client.exe";
-	constexpr int updateSpeedMs = 1; // 16 = 60fps
+	constexpr int updateSpeedMs = 16; // 16 = 60fps
 }

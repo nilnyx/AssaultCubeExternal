@@ -21,6 +21,8 @@ int main() {
 	Memory mem(hProcess);
 
 	while (true) {
+		Sleep(Constants::updateSpeedMs);
+
 		uintptr_t localPlayer = mem.RPM<uintptr_t>(Addresses::baseAddr + Addresses::localPlayer);
 		if (!localPlayer) continue;
 
@@ -34,6 +36,9 @@ int main() {
 		uintptr_t entityList = mem.RPM<uintptr_t>(Addresses::baseAddr + Addresses::entityList);
 		if (!entityList) continue;
 
+		float viewMatrix[4][4];
+		mem.bufferRPM(Addresses::baseAddr + Addresses::viewMatrix, viewMatrix, sizeof(viewMatrix));
+
 		// 0-31
 		for (int i = 0; i < playerCount; i++) {
 			uintptr_t entity = mem.RPM<uintptr_t>(entityList + i * 0x4);
@@ -43,7 +48,7 @@ int main() {
 			mem.bufferRPM(entity + Offsets::nickname, nickname, sizeof(nickname));
 
 			int health = mem.RPM<int>(entity + Offsets::health);
-			if (health > 100 || health < 0) continue;
+			if (health > 100 || health <= 0) continue;
 
 			//std::cout << std::format("{}'s health: {}", nickname, health) << std::endl;
 
@@ -66,8 +71,6 @@ int main() {
 				.y = screenY
 			};
 
-			float viewMatrix[4][4];
-			mem.bufferRPM(Addresses::baseAddr + Addresses::viewMatrix, viewMatrix, sizeof(viewMatrix));
 
 			if (!WorldToScreen(position, screen, viewMatrix, screenWidth, screenHeight)) {
 				std::cout << "Out of screen" << std::endl;
@@ -78,7 +81,6 @@ int main() {
 		}
 
 
-		Sleep(Constants::updateSpeedMs);
 	}
 
 	CloseHandle(hProcess);

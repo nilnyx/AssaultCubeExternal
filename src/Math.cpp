@@ -11,7 +11,6 @@ bool WorldToScreen(const Vector3& pos, Vector2& screen, const float matrix[4][4]
 	if (clipW <= 0.1f) return false;
 
 	// normalizing device coordinates 
-	// point is behind camera but outside FOV
 	float ndcX = clipX / clipW;
 	float ndcY = clipY / clipW;
 

@@ -15,10 +15,10 @@ void Overlay::RenderImGui() {
     ImGui::Render();
     const float clear_color_with_alpha[4] =
     {
-        0.45f,
-        0.55f,
-        0.60f,
-        1.0f
+        0.0f,
+        0.0f,
+        0.0f,
+        0.0f
     };
     DxRender::g_pd3dDeviceContext->OMSetRenderTargets(1, &DxRender::g_mainRenderTargetView, nullptr);
     DxRender::g_pd3dDeviceContext->ClearRenderTargetView(DxRender::g_mainRenderTargetView, clear_color_with_alpha);
@@ -86,9 +86,33 @@ bool Overlay::Start() {
     float main_scale = ImGui_ImplWin32_GetDpiScaleForMonitor(::MonitorFromPoint(POINT{ 0, 0 }, MONITOR_DEFAULTTOPRIMARY));
 
     // Create application window
-    WNDCLASSEXW wc = { sizeof(wc), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(nullptr), nullptr, nullptr, nullptr, nullptr, L"ImGui Example", nullptr };
+    WNDCLASSEXW wc = {
+	    sizeof(wc),
+    	CS_CLASSDC,
+    	WndProc,
+    	0L, 0L,
+    	GetModuleHandle(nullptr),
+    	nullptr,
+    	nullptr,
+    	nullptr,
+    	nullptr,
+    	L"ImGui Example",
+    	nullptr
+    };
     ::RegisterClassExW(&wc);
-    HWND hwnd = ::CreateWindowW(wc.lpszClassName, L"Dear ImGui DirectX11 Example", WS_OVERLAPPEDWINDOW, 100, 100, (int)(1280 * main_scale), (int)(800 * main_scale), nullptr, nullptr, wc.hInstance, nullptr);
+    HWND hwnd = ::CreateWindowExW(
+        WS_EX_TOPMOST | WS_EX_LAYERED | WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW ,
+        wc.lpszClassName,
+        L"Dear ImGui DirectX11 Example",
+        WS_POPUP,
+        0, 0,
+        1920,
+        1080,
+        nullptr,
+        nullptr,
+        wc.hInstance,
+        nullptr
+    );
 
     // Initialize Direct3D
     if (!DxRender::CreateDeviceD3D(hwnd))
@@ -97,6 +121,9 @@ bool Overlay::Start() {
         ::UnregisterClassW(wc.lpszClassName, wc.hInstance);
         return false;
     }
+
+    SetLayeredWindowAttributes(hwnd, RGB(0,0,0), 0, LWA_COLORKEY);
+    SetWindowPos(hwnd, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
 
     // Show the window
     ::ShowWindow(hwnd, SW_SHOWDEFAULT);

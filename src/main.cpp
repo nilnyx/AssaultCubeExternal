@@ -7,9 +7,13 @@
 #include "Math.h"
 #include "Memory.h"
 #include "Offsets.h"
+#include "Overlay/Overlay.h"
 
 
 int main() {
+	Overlay::Start();
+
+
 	DWORD pid = GetProcessIdByName(Constants::processName);
 	if (!pid)
 		return 1;
